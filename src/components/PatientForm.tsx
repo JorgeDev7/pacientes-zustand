@@ -1,4 +1,15 @@
+import { useForm } from "react-hook-form";
+import Error from "./Error";
+import { usePatientStore } from "../store";
+
 export default function PatientForm() {
+
+    const addPatient = usePatientStore(state => state.addPatient);
+    const { register, handleSubmit, formState: { errors } } = useForm<DraftPatient>();
+
+    const registerPatient = (data: DraftPatient) => {
+        addPatient(data);
+    };
 
     return (
         <div className="md:w-1/2 lg:w-2/5 mx-5">
@@ -12,6 +23,7 @@ export default function PatientForm() {
             <form
                 className="bg-white shadow-md rounded-lg py-10 px-5 mb-10"
                 noValidate
+                onSubmit={handleSubmit(registerPatient)}
             >
                 <div className="mb-5">
                     <label htmlFor="name" className="text-sm uppercase font-bold">
@@ -22,7 +34,16 @@ export default function PatientForm() {
                         className="w-full p-3  border border-gray-100"
                         type="text"
                         placeholder="Nombre del Paciente"
+                        {...register('name', {
+                            required: 'El Nombre del paciente es obligatorio'
+                        })}
                     />
+
+                    {errors.name && (
+                        <Error>
+                            {errors.name?.message}
+                        </Error>
+                    )}
                 </div>
 
                 <div className="mb-5">
@@ -34,7 +55,16 @@ export default function PatientForm() {
                         className="w-full p-3  border border-gray-100"
                         type="text"
                         placeholder="Nombre del Propietario"
+                        {...register('caretaker', {
+                            required: 'El Propietario es obligatorio'
+                        })}
                     />
+
+                    {errors.caretaker && (
+                        <Error>
+                            {errors.caretaker?.message}
+                        </Error>
+                    )}
                 </div>
 
                 <div className="mb-5">
@@ -46,7 +76,20 @@ export default function PatientForm() {
                         className="w-full p-3  border border-gray-100"
                         type="email"
                         placeholder="Email de Registro"
+                        {...register("email", {
+                            required: "El Email es Obligatorio",
+                            pattern: {
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                message: 'Email No Válido'
+                            }
+                        })}
                     />
+
+                    {errors.email && (
+                        <Error>
+                            {errors.email?.message}
+                        </Error>
+                    )}
                 </div>
 
                 <div className="mb-5">
@@ -57,7 +100,16 @@ export default function PatientForm() {
                         id="date"
                         className="w-full p-3  border border-gray-100"
                         type="date"
+                        {...register('date', {
+                            required: 'La fecha de alta es obligatoria'
+                        })}
                     />
+
+                    {errors.date && (
+                        <Error>
+                            {errors.date?.message}
+                        </Error>
+                    )}
                 </div>
 
                 <div className="mb-5">
@@ -68,7 +120,16 @@ export default function PatientForm() {
                         id="symptoms"
                         className="w-full p-3  border border-gray-100"
                         placeholder="Síntomas del paciente"
+                        {...register('symptoms', {
+                            required: 'Los síntomas son obligatorios'
+                        })}
                     ></textarea>
+
+                    {errors.symptoms && (
+                        <Error>
+                            {errors.symptoms?.message}
+                        </Error>
+                    )}
                 </div>
 
                 <input
